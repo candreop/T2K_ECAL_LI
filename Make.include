@@ -1,0 +1,176 @@
+#
+# C.Andreopoulos <<costas.andreopoulos \at stfc.ac.uk>>, Rutherford Lab.
+#
+
+#-------------------------------------------------------------------
+# READ CONFIG SCRIPT OUTPUT
+#-------------------------------------------------------------------
+#
+include $(ECALLI)/Make.config
+
+#-------------------------------------------------------------------
+# ARCHITECTURE 
+#-------------------------------------------------------------------
+# Using arch names used by ROOT. ARCH can be set to 
+# 'macosx', 'linux', 'linuxx8664gcc' 
+#
+ARCH = $(ECALLI_OPT_ARCH)
+
+#-------------------------------------------------------------------
+# CODE OPTIMIZATION & DEBUG FLAGS
+#-------------------------------------------------------------------
+#
+#OPT_CC_DEBUG_FLAG   = -g
+#OPT_CC_OPTIMIZ_FLAG = -O3
+
+#-------------------------------------------------------------------
+# PROFILING OPTIONS
+#-------------------------------------------------------------------
+# Linking in the Google Profiling Tool library
+#
+GPROF_LIBRARIES = 
+ifdef ECALLI_OPT_ENABLE_PROFILER
+  ifdef ECALLI_OPT_WITH_PROFILER_LIB
+    PROF_LIBRARIES += -L$(ECALLI_OPT_WITH_PROFILER_LIB) -lprofiler
+  else
+    PROF_LIBRARIES += -L/usr/local/lib -lprofiler
+  endif
+endif
+
+#-------------------------------------------------------------------
+# GLOBALS
+#-------------------------------------------------------------------
+#
+MAKE   := gmake
+RM      = rm -f
+MKDIR   = mkdir -p
+CAT     = cat
+SYMLINK = ln -sf
+COPY    = cp
+INSTALL = @INSTALL@
+AR      = ar
+ARFLAGS = rv
+RANLIB  = ranlib
+
+#-------------------------------------------------------------------
+# GCC COMPILER OPTIONS
+#-------------------------------------------------------------------
+#
+
+# >> Generic options
+#
+CC = g++
+LD = g++
+
+# Get gcc version & split in '.' delimited tokens (major/minor/revison num.)
+# Can make build options conditional on gcc vrs (see GENIE makefiles)
+#
+CCVRS      = $(shell $(CC) -dumpversion)
+CCVRS_MAJ  = $(shell awk 'BEGIN {\
+		str="$(CCVRS)"; split(str, tk, "."); print tk[1]}')
+CCVRS_MIN  = $(shell awk 'BEGIN {\
+		str="$(CCVRS)"; split(str, tk, "."); print tk[2]}')
+CCVRS_REV  = $(shell awk 'BEGIN {\
+		str="$(CCVRS)"; split(str, tk, "."); print tk[3]}')
+
+# >> Arch-specific options
+#
+
+# MAC OS X with gcc
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ifeq ($(strip $(ARCH)),macosx) 
+ARCH_OK       = YES
+CCFLAGS       = -pipe -W -Wall -Wno-long-double -ansi \
+		-fsigned-char -fno-common -flat_namespace \
+		$(ECALLI_OPT_CC_DEBUG_FLAG) \
+		$(ECALLI_OPT_CC_OPTIMIZ_FLAG) \
+		$(ECALLI_OPT_CC_USERDEF_FLAGS) 
+LDFLAGS       = -bind_at_load
+SOFLAGS       = -dynamiclib -flat_namespace \
+		-single_module -undefined dynamic_lookup
+DllSuf       := dylib
+DllLinkSuf   := so
+StaticLibSuf := a
+ObjSuf       := o
+SrcSuf       := c
+SOCMD         = $(LD)
+OutPutOpt     = -o
+SOMINF =
+endif
+
+# LINUX / 32-bit x86 / with gcc
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ifeq ($(strip $(ARCH)),linux) 
+ARCH_OK       = YES
+CCFLAGS       = -Wall -fPIC -ansi \
+		$(ECALLI_OPT_CC_DEBUG_FLAG) \
+		$(ECALLI_OPT_CC_OPTIMIZ_FLAG) \
+		$(ECALLI_OPT_CC_USERDEF_FLAGS) 
+LDFLAGS       = -g 
+SOFLAGS       = -shared
+DllSuf       := so
+DllLinkSuf   := 
+StaticLibSuf := a
+ObjSuf       := o
+SrcSuf       := c
+SOCMD         = $(LD)
+OutPutOpt     = -o
+SOMINF =
+endif
+
+# LINUX / 64-bit x86 / with gcc
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ifeq ($(strip $(ARCH)),linuxx8664gcc) 
+ARCH_OK       = YES
+CCFLAGS       = -Wall -fPIC -ansi \
+		$(ECALLI_OPT_CC_DEBUG_FLAG) \
+		$(ECALLI_OPT_CC_OPTIMIZ_FLAG) \
+		$(ECALLI_OPT_CC_USERDEF_FLAGS) 
+LDFLAGS       = -g
+SOFLAGS       = -shared
+DllSuf       := so
+DllLinkSuf   := 
+StaticLibSuf := a
+ObjSuf       := o
+SrcSuf       := c
+SOCMD         = $(LD)
+OutPutOpt     = -o
+SOMINF =
+endif
+
+#-------------------------------------------------------------------
+# ECALLI SOFTW.
+#-------------------------------------------------------------------
+
+ECAL_LISOFT_VERSION = $(shell awk '{print $0}' $(ECALLI)/ECalLi.VERSION)
+
+LIB_BASE   = libECalLI
+LIB        = $(LIB_BASE)-$(ECAL_LISOFT_VERSION).$(DllSuf)
+LIBLNK     = $(LIB_BASE).$(DllSuf)
+LIBLNK_mac = $(LIB_BASE).$(DllLinkSuf)
+
+#-------------------------------------------------------------------
+# INCLUDE & LIBRARY PATHS
+#-------------------------------------------------------------------
+
+INCLUDES  := $(INCLUDES) $(LINUX_SYS_INCLUDES) -I$(ECALLI)
+INCLUDES  := $(INCLUDES) -I$(ECALLI_OPT_WITH_MIDAS_INC)
+
+LIBRARIES := $(LIBRARIES) -L$(ECALLI) -lECalLI
+LIBRARIES := $(LIBRARIES) -L$(ECALLI_OPT_WITH_MIDAS_LIB) -lmidas -lm -lz -lutil -lnsl -lpthread
+
+# Default compiler and preprocessor flags
+
+CCFLAGS  := $(ENV_CCFLAGS) $(CCFLAGS)
+CPPFLAGS  = $(INCLUDES)
+CFLAGS    = -g
+
+#-------------------------------------------------------------------
+# MAKE RULES
+#-------------------------------------------------------------------
+
+.SUFFIXES : .inc .c
+
+.c.o:
+	$(CC) -c -o $@ $(CCFLAGS) $(CPPFLAGS) $<
+	
