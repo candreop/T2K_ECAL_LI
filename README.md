@@ -21,10 +21,9 @@ The following two directories need to be setup:
 </pre>
 
 where:
-    - The IPAddress string size should match `kHostNameStrLen' defined in ECalLiDefs.h
-    - MAX_NCARDS above should match the `kNumOfLIControlCards' defined in ECalLiDefs.h
-    - The IPAddrress array can include null addresses. The corresponding card "slots"
-      will be disabled.
+- The IPAddress string size should match `kHostNameStrLen' defined in ECalLiDefs.h
+- MAX_NCARDS above should match the `kNumOfLIControlCards' defined in ECalLiDefs.h
+- The IPAddrress array can include null addresses. The corresponding card "slots" will be disabled.
 
 
 <pre>
@@ -39,7 +38,7 @@ where:
 </pre>
 
 where:
-    - MAX_NSETTINGS above should match the `kMaxNumOfFlashSeqSet' defined in ECalLiDefs.h
+- MAX_NSETTINGS above should match the `kMaxNumOfFlashSeqSet' defined in ECalLiDefs.h
     - Note that MAX_NSETTINGS also controls the TCP/IP mesg size sent to each LI card:
       TCP/IP mesg size in bytes = (MAX_NSETTINGS+4)*2.
       If you modify MAX_NSETTINGS then the LI card firmware needs to be updated too so that
