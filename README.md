@@ -1,30 +1,32 @@
-##################################################################################################
 
-T2K ECAL Light Injection Control Software
+# T2K ECAL Light Injection Control Software
+
+
+## Author 
 
 Costas Andreopoulos <constantinos.andreopoulos \at cern.ch>
 University of Liverpool & STFC Rutherford Appleton Laboratory
 
-##################################################################################################
-
-
-REQUIRED ODB ENTRIES
-__________________________________________________________________________________________________
+## Required ODB entries
 
 The client reads the *LI system configuration* and the *flash sequence* from ODB.
-The following two directories need to be setup with the following variables
-(see `CREATING THE ODB TABLES' at the end of this document):
+The following two directories need to be setup:
 
+<pre>
     /Config/ECAL/LI/Controller/
 			|
 			|-------> string IPAddrress [MAX_NCARDS]
 			|-------> int    Port       [MAX_NCARDS]
+</pre>
 
+where:
     * The IPAddress string size should match `kHostNameStrLen' defined in ECalLiDefs.h
     * MAX_NCARDS above should match the `kNumOfLIControlCards' defined in ECalLiDefs.h
     * The IPAddrress array can include null addresses. The corresponding card "slots"
       will be disabled.
 
+
+<pre>
     /Config/ECAL/LI/Sequence/
 			|
 			|-------> unsigned short int NFlashesPerSetting
@@ -33,7 +35,9 @@ The following two directories need to be setup with the following variables
 			|-------> unsigned char      Amplitute  [MAX_NSETTINGS]
 			|-------> unsigned char      Pattern    [MAX_NSETTINGS]
 			|-------> unsigned short int PulserMask [MAX_NSETTINGS]
+</pre>
 
+where:
     * MAX_NSETTINGS above should match the `kMaxNumOfFlashSeqSet' defined in ECalLiDefs.h
     * Note that MAX_NSETTINGS also controls the TCP/IP mesg size sent to each LI card:
       TCP/IP mesg size in bytes = (MAX_NSETTINGS+4)*2.
