@@ -21,9 +21,9 @@ The following two directories need to be setup:
 </pre>
 
 where:
-- The IPAddress string size should match `kHostNameStrLen' defined in ECalLiDefs.h
-- MAX_NCARDS above should match the `kNumOfLIControlCards' defined in ECalLiDefs.h
-- The IPAddrress array can include null addresses. The corresponding card "slots" will be disabled.
+- The **IPAddress** string size should match *kHostNameStrLen* defined in ECalLiDefs.h
+- **MAX_NCARDS** above should match *kNumOfLIControlCards* defined in ECalLiDefs.h
+- The **IPAddrress** array can include null addresses. The corresponding card slots will be disabled.
 
 
 <pre>
@@ -37,37 +37,38 @@ where:
 			|-------> unsigned short int PulserMask [MAX_NSETTINGS]
 </pre>
 
-where:
-- MAX_NSETTINGS above should match the `kMaxNumOfFlashSeqSet' defined in ECalLiDefs.h
-    - Note that MAX_NSETTINGS also controls the TCP/IP mesg size sent to each LI card:
-      TCP/IP mesg size in bytes = (MAX_NSETTINGS+4)*2.
-      If you modify MAX_NSETTINGS then the LI card firmware needs to be updated too so that
-      the mesg sizes are in sync.
-    - Definition and use of the flash sequence variables:
-        - NFlashesPerSetting:
-           Number of triggers to flash for each setting. Same for all settings & cards.
-        - NTrigAppended:
-           Number of triggers to append to the end of each setting to allow time for control card to reconfigure. 
-           These triggers are not entered in the LI histograms.
-           The total number of triggers at each setting is therefore NFlashesPerSetting+NTrigAppended.
-           Same for all settings & cards.
-        - NSettings:
-           Number of settings in the list to follow ( <= MAX_NSETTINGS)
-        - Amplitute:
-           LED intensity.
-           Is a single-byte unsigned int which defines the light-level on a scale of 0-255
-       - Pattern:
-           LED group flashed.
-           Is a bit-coded single-byte field.
-           Pattern is to be interpreted by the LI card.
-           Example 1
-             For the down-stream ECAL:
-                B0: North, B1: East, B2: South, B3: West, B4-7: unused
-                BO is the LSF bit. Any combination of bits can be set.
-    - The PulserMask is a bit-mask which can be used to define which cards sees which settings.
-      For example, to send setting k to cards 0, 1 and 5 only set:
-      PulserMask[k] = (1<<0) + (1<<1) +  (1<<5) = 1 + 2 + 32 = 35.
+The definition and use of the flash sequence variables is given below:
 
+- **NFlashesPerSetting**: 
+  Number of triggers to flash for each setting. Same for all settings & cards.
+- **NTrigAppended**:
+  Number of triggers to append to the end of each setting to allow time for control card to reconfigure. 
+  These triggers are not entered in the LI histograms.
+  The total number of triggers at each setting is therefore NFlashesPerSetting+NTrigAppended.
+  Same for all settings & cards.
+- **NSettings**:
+  Number of settings in the list to follow ( <= MAX_NSETTINGS)
+- **Amplitute**:
+  LED intensity.
+  Is a single-byte unsigned int which defines the light-level on a scale of 0-255
+- **Pattern**:
+  LED group flashed.
+  Is a bit-coded single-byte field.
+  Pattern is to be interpreted by the LI card.
+  Example 1
+  For the down-stream ECAL:
+  B0: North, B1: East, B2: South, B3: West, B4-7: unused
+  BO is the LSF bit. Any combination of bits can be set.
+- **PulserMark**
+  A bit-mask which can be used to define which cards sees which settings.
+  For example, to send setting k to cards 0, 1 and 5 only set:
+  PulserMask[k] = (1<<0) + (1<<1) +  (1<<5) = 1 + 2 + 32 = 35.
+
+Note that **MAX_NSETTINGS** above should match *kMaxNumOfFlashSeqSet* defined in ECalLiDefs.h
+
+The value of **MAX_NSETTINGS** also controls the TCP/IP mesg size sent to each LI card:
+TCP/IP mesg size in bytes = (MAX_NSETTINGS+4)*2.
+If you modify **MAX_NSETTINGS** then the LI card firmware needs to be updated too so that the mesg sizes are in sync.
 
 The client periodically updates the ODB with the ECAL LI state.
 
