@@ -165,7 +165,7 @@ where:
   then the controller goes on error.
 
 
-# Setting up the environment, configuring and building the LI controller
+# Setting up the environment
 
 *shell%* **source** /path/to/setup.sh
 
@@ -181,6 +181,8 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ECALLI}
 export PATH=${PATH}:${MIDASSYS}/linux/bin/:${ECALLI}
 </pre>
 
+
+# Configuring and building the LI controller
 
 To configure the LI controller software, run the 'configure' script.
 
@@ -202,14 +204,15 @@ Once the installer is configured, build the LI controller by typing:
 *shell%% **gmake**
 
 
-RUNNING 
+# Running the LI controller
 __________________________________________________________________________________________________
 
-(1) Open a terminal.  
-    Start-up the MIDAS https server.
+- Open a terminal and start-up the MIDAS https server.
 
+<pre>
     shell% echo $HOSTNAME              || use that name in step 2)
     shell% mhttp -p port_nu            || eg, shell$ mhttp -p 8080
+</pre>
   
 (2) Fire-up a web browser.
     Connect to the 'hostname:port_nu'  || eg, 'http://heplnx102.pp.rl.ac.uk:8080'
