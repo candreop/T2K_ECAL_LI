@@ -1,11 +1,11 @@
 
 # T2K ECAL/LI Control Software
 
-This is the sotfware used for controlling the Light Injection (LI) system of the T2K/ND280 Electromagnetic Calorimeter (ECAL).
+Software for controlling the Light Injection (LI) system of the T2K/ND280 Electromagnetic Calorimeter (ECAL).
 
 ## Author 
 
-Costas Andreopoulos <constantinos.andreopoulos \at cern.ch>
+Dr. Costas Andreopoulos <constantinos.andreopoulos \at cern.ch>
 
 University of Liverpool & STFC Rutherford Appleton Laboratory
 
@@ -303,13 +303,11 @@ Once the installer is configured, build the LI controller by typing:
     ...
 <pre>
 
-
 - Open a terminal and start up the ECAL LI controller.
 
 <pre>
     shell$ ./pulser_controller
 </pre>
-
 
 - Start/stop runs, as needed, using the web browser
 
