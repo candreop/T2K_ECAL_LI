@@ -20,6 +20,7 @@ The following two directories need to be setup:
 			|-------> int    Port       [MAX_NCARDS]
 </pre>
 
+and
 where:
 - The **IPAddress** string size should match *kHostNameStrLen* defined in ECalLiDefs.h
 - **MAX_NCARDS** above should match *kNumOfLIControlCards* defined in ECalLiDefs.h
@@ -37,10 +38,12 @@ where:
 			|-------> unsigned short int PulserMask [MAX_NSETTINGS]
 </pre>
 
-The definition and use of the flash sequence variables is given below:
+The definition and use of the controller and flash sequence variables is given below:
 
 - **NFlashesPerSetting**: 
+
   Number of triggers to flash for each setting. Same for all settings & cards.
+
 - **NTrigAppended**:
   Number of triggers to append to the end of each setting to allow time for control card to reconfigure. 
   These triggers are not entered in the LI histograms.
