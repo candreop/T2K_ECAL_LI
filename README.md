@@ -39,56 +39,43 @@ and
 
 The definition and use of the controller and flash sequence variables is given below:
 
-- **MAX_NCARDS** 
+- **MAX_NCARDS**: The maximum number of LI cards in the system.   
 
-  The maximum number of LI cards in the system.   
-  The value should should match *kNumOfLIControlCards* defined in ECalLiDefs.h
+The value should should match *kNumOfLIControlCards* defined in ECalLiDefs.h
 
-- **MAX_NSETTINGS** 
+- **MAX_NSETTINGS**: The maximum number of LI frash sequence settings.  
 
-  The maximum number of LI frash sequence settings.  
-  The value should match *kMaxNumOfFlashSeqSet* defined in ECalLiDefs.h
+   The value should match *kMaxNumOfFlashSeqSet* defined in ECalLiDefs.h
 
    The value of **MAX_NSETTINGS** also controls the TCP/IP mesg size sent to each LI card -
    TCP/IP mesg size in bytes = (MAX_NSETTINGS+4)*2 
    
    If you modify **MAX_NSETTINGS** then the LI card firmware needs to be updated too so that the mesg sizes are in sync.
 
-- **IPAddress** and **Port**:
-
-  These variables define the address of a LI card.
+- **IPAddress** and **Port**: Define the address of a LI card.
   
   The **IPAddress** string size should match *kHostNameStrLen* defined in ECalLiDefs.h.
-  The **IPAddrress** array can include null addresses. The corresponding card slots will be disabled.
 
-- **NFlashesPerSetting**: 
+The **IPAddrress** array can include null addresses. The corresponding card slots will be disabled.
 
-  Number of triggers to flash for each setting. 
+- **NFlashesPerSetting**: The number of triggers to flash for each setting. 
   
   It has the same value for all settings & cards.
 
-- **NTrigAppended**:
-
-  Number of triggers to append to the end of each setting to allow time for control card to reconfigure. 
+- **NTrigAppended**: The number of triggers to append to the end of each setting to allow time for control card to reconfigure. 
   
   These triggers are not entered in the LI histograms.
-  The total number of triggers at each setting is therefore **NFlashesPerSetting** + **NTrigAppended**.
+  Therefore, total number of triggers at each setting is **NFlashesPerSetting** + **NTrigAppended**.
   
-  It has the same value for all settings & cards.
+  **NTrigAppended** has the same value for all settings & cards.
   
-- **NSettings**:
+- **NSettings**: The number of settings in the list to follow ( <= **MAX_NSETTINGS** )
 
-  Number of settings in the list to follow ( <= MAX_NSETTINGS)
-
-- **Amplitute**:
-
-  LED intensity.
+- **Amplitute**: The LED intensity.
   
   Is a single-byte unsigned int which defines the light-level on a scale of 0-255
 
-- **Pattern**:
-
-  LED group flashed.
+- **Pattern**: The LED group flashed.
   
   Is a bit-coded single-byte field.
 
@@ -98,9 +85,7 @@ The definition and use of the controller and flash sequence variables is given b
   B0: North, B1: East, B2: South, B3: West, B4-7: unused.
   BO is the LSF bit. Any combination of bits can be set.
 
-- **PulserMark**
-
-  A bit-mask which can be used to define which cards sees which settings.
+- **PulserMark**: A bit-mask which can be used to define which cards sees which settings.
   
   For example, to send setting k to cards 0, 1 and 5 only set:
   PulserMask[k] = (1<<0) + (1<<1) +  (1<<5) = 1 + 2 + 32 = 35.
@@ -129,41 +114,25 @@ Its structure is the following:
 
 where:
 
-- **IsActive**: 
+- **IsActive**: Is 1 if the card responded last time it was pinged or was queried for its flash progress.
 
-  Is 1 if the card responded last time it was pinged or was queried for its flash progress.
+- **CurrSetting**: Is the current flashing setting for the given card.
 
-- **CurrSetting**:
+- **CurrAmplitude**: Is the current flashing amplitude for the given card.
 
-  Is the current flashing setting for the given card.
+- **CurrPattern**: Is the current flashing pattern for the given card.
 
-- **CurrAmplitude**:
+- **CurrNTrigInSetting**: Is the current number of triggers flashed in the current setting for the given card.
 
-  Is the current flashing amplitude for the given card.
+- **CurrNTrigTotal**: Is the total number of triggers flashed in the current run for the given card.
 
-- **CurrPattern**:
-
-  Is the current flashing pattern for the given card.
-
-- **CurrNTrigInSetting**:
-
-  Is the current number of triggers flashed in the current setting for the given card.
-
-- **CurrNTrigTotal**:
-
-  Is the total number of triggers flashed in the current run for the given card.
-
-- **GlobCurrSetting**: 
-
-  Is the *global* current flashing setting in the input sequence.
+- **GlobCurrSetting**: Is the *global* current flashing setting in the input sequence.
 
   Typically, all cards should be at the same setting. If the program queried while cards
   were transitioning between settings then they can be different by 1. In this latter case
   the earliest setting is returned. 
 
-- **GlobCurrNTrigInSetting**: 
-
-  Is the *global* number of triggers flashed in the current sequence.
+- **GlobCurrNTrigInSetting**: Is the *global* number of triggers flashed in the current sequence.
 
   Typically, all cards report the same number.
   If all cards are at the same setting, then the contoller queries all cards and saves the
@@ -301,7 +270,7 @@ Once the installer is configured, build the LI controller by typing:
     [local:Default:S]Sequence>set Pattern[4] 10
     ...
     ...
-<pre>
+</pre>
 
 - Open a terminal and start up the ECAL LI controller.
 
