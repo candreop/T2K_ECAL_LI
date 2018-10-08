@@ -207,22 +207,21 @@ Once the installer is configured, build the LI controller by typing:
 # Running the LI controller
 __________________________________________________________________________________________________
 
-- Open a terminal and start-up the MIDAS https server.
+- Open a terminal and start-up the MIDAS http server.
 
 <pre>
-    shell% echo $HOSTNAME              || use that name in step 2)
+    shell% echo $HOSTNAME              || use that name in next step)
     shell% mhttp -p port_nu            || eg, shell$ mhttp -p 8080
 </pre>
   
-(2) Fire-up a web browser.
-    Connect to the 'hostname:port_nu'  || eg, 'http://heplnx102.pp.rl.ac.uk:8080'
+- Fire-up your web browser and connect to the MIDAS https server (at *hostname:port_nu*) 
 
-(3) Open a terminal.
-    Start the ODB editor and cd to the ECALLI Controller and Sequence directories.
-    Set the variables within these directories to control the LI client.
+- Open a terminal, start the ODB editor and cd to the ECALLI **Controller** and **Sequence** directories.
+  Set the variables within these directories to control the LI client.
 
-    Example / Set a card configuration:
+  Example - Set a card configuration:
 
+<pre>
     $ odbedit
     [local:Default:R]/>cd /Config/ECAL/LI/Controller/
     [local:Default:S]Controller> set IPAddress[0] "168.120.10.101"
@@ -230,9 +229,11 @@ ________________________________________________________________________________
     [local:Default:S]Controller> set Port[0] 9090
     [local:Default:S]Controller> set Port[1] 9090
     ...
+</pre>
 
-    Example / Set a flash sequence:
+  Example - Set a flash sequence:
 
+<pre>
     $ odbedit
     [local:Default:R]/>cd /Config/ECAL/LI/Sequence/
     [local:Default:S]Sequence>set NFlashesPerSetting 8000
@@ -252,15 +253,17 @@ ________________________________________________________________________________
     [local:Default:S]Sequence>set Pattern[4] 10
     ...
     ...
+<pre>
 
 
-(4) Open a terminal
-    Start up the ECAL LI controller
+- Open a terminal and start up the ECAL LI controller.
 
-    $ ./pulser_controller
+<pre>
+    shell$ ./pulser_controller
+</pre>
 
 
-(5) Start/stop runs uning the web browser
+- Start/stop runs, as needed, using the web browser
 
 
 
