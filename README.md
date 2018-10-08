@@ -1,5 +1,5 @@
 
-# T2K ECAL Light Injection Control Software
+# T2K/ND280 Electromagnetic Calorimeter (ECAL) Light Injection (LI) Control Software
 
 
 ## Author 
@@ -165,41 +165,41 @@ where:
   then the controller goes on error.
 
 
-ENVIRONMENT SETUP
-__________________________________________________________________________________________________
+# Setting up the environment, configuring and building the LI controller
 
-shell% source /path/to/setup.sh
+*shell%* **source** /path/to/setup.sh
 
-The following shows the contents of my setup.sh script.
-Set yours accordingly.
+The following shows the contents of my setup.sh script. Set yours accordingly.
 
-.....................................................
+<pre>
 !/bin/bash
-
 
 export ECALLI=/home/hep/candreop/LI/controller/dev/
 export MIDASSYS=/home/hep/candreop/LI/midas/svn_head/
 export MIDAS_DIR=/home/hep/candreop/LI/midas/exp/
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ECALLI}
 export PATH=${PATH}:${MIDASSYS}/linux/bin/:${ECALLI}
-.....................................................
+</pre>
 
 
-BUILDING
-__________________________________________________________________________________________________
+To configure the LI controller software, run the 'configure' script.
 
-(1) Run the 'configure' script
+For help, type:   
 
-    For help, type:   
-    shell% ./configure --help
+*shell%* **./configure --help**
 
-    You can run the configure script as follows:
-    shell% ./configure --arch=linux --with-midas-inc=/some/path --with-midas-lib=/some/path
+You can run the configure script as follows:
 
-    The MIDAS paths are auto-detected. You can probably get away by just doing
-    shell% ./configure --arch=linux 
+*shell%* **./configure --arch=**linux **--with-midas-inc=**/some/path **--with-midas-lib=**/some/path
 
-(2) shell% gmake
+The MIDAS paths are auto-detected, so it may sufficient to type:
+
+*shell%* **./configure --arch=**linux 
+
+
+Once the installer is configured, build the LI controller by typing:
+
+*shell%% **gmake**
 
 
 RUNNING 
