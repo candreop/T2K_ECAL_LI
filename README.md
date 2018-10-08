@@ -12,9 +12,10 @@ University of Liverpool & STFC Rutherford Appleton Laboratory
 ## LI system and flash sequence configuration via ODB 
 
 The client reads the *LI system configuration* and the *flash sequence* from two ODB tables.
-
-These tables live in **/Config/ECAL/LI/Controller/** and **/Config/ECAL/LI/Sequence/**.
+These tables live in **/Config/ECAL/LI/Controller/** and **/Config/ECAL/LI/Sequence/**
 and they need to be created by the user (instructions are given at the end of this REAME).
+
+The structure of the tables is the following:
 
 <pre>
     /Config/ECAL/LI/Controller/
@@ -107,11 +108,10 @@ The definition and use of the controller and flash sequence variables is given b
 
 ## LI system state information in ODB 
 
-The client periodically updates the ODB with the ECAL LI state.
+The client periodically updates an ECAL LI state table in the ODB.
+This table lives in **/State/ECAL/LI/** and it is created automatically by the controler.
 
-The LI state information is stored in **/State/ECAL/LI/** 
-
-This table is created automatically by the controler.
+Its structure is the following:
 
 <pre>
     /State/ECAL/LI/
@@ -161,7 +161,7 @@ where:
   were transitioning between settings then they can be different by 1. In this latter case
   the earliest setting is returned. 
 
-- GlobCurrNTrigInSetting: 
+- **GlobCurrNTrigInSetting**: 
 
   Is the *global* number of triggers flashed in the current sequence.
 
@@ -171,6 +171,47 @@ where:
   considers only the cards at the earliest setting and saves the smallest number of triggers.
   If the spread in the number of triggers is > *kMaxNTrigSpread*  (defined in ECalLiDefs.h)
   then the controller goes on error.
+
+
+# Creating the required ODB tables
+
+To create the required input ODB tables (**/Config/ECAL/LI/Controller/** and **/Config/ECAL/LI/Sequence/**)
+make sure that array sizes and variable type lengths match the ones decalared in ECalLiDefs.h
+
+For example, to create the structure for:
+
+- kHostNameStrLen      = 16
+- kNumOfLIControlCards = 8
+- kMaxNumOfFlashSeqSet = 50
+
+type the following:
+
+<pre>
+    $ odbedit
+    [local:Default:S]/>          mkdir Config
+    [local:Default:S]/>          cd Config
+    [local:Default:S]Config>     mkdir ECAL
+    [local:Default:S]Config>     cd ECAL
+    [local:Default:S]ECAL>       mkdir LI
+    [local:Default:S]ECAL>       cd LI
+    [local:Default:S]LI>         mkdir Controller
+    [local:Default:S]LI>         cd Controller
+    [local:Default:S]Controller> create string IPAddress[8]
+    String length [32]: 16
+    [local:Default:S]Controller> create int Port[8]    
+    [local:Default:S]Controller> cd ..
+    [local:Default:S]LI>         mkdir Sequence
+    [local:Default:S]LI>         cd Sequence
+    [local:Default:S]Sequence>   create WORD NFlashesPerSetting
+    [local:Default:S]Sequence>   create WORD NTrigAppended            
+    [local:Default:S]Sequence>   create WORD NSettings     
+    [local:Default:S]Sequence>   create WORD PulserMask[50]
+    [local:Default:S]Sequence>   create WORD Amplitude[50]  
+    [local:Default:S]Sequence>   create WORD Pattern[50]  
+    [local:Default:S]Sequence>   cd ..
+    [local:Default:S]LI>         mkdir Sequence
+    [local:Default:S]LI>         cd Sequence
+</pre>
 
 
 # Setting up the environment
@@ -271,47 +312,6 @@ Once the installer is configured, build the LI controller by typing:
 
 
 - Start/stop runs, as needed, using the web browser
-
-
-# Creating the required ODB tables
-
-To create the required input ODB tables (**/Config/ECAL/LI/Controller/** and **/Config/ECAL/LI/Sequence/**)
-make sure that array sizes and variable type lengths match the ones decalared in ECalLiDefs.h
-
-For example, to create the structure for:
-
-- kHostNameStrLen      = 16
-- kNumOfLIControlCards = 8
-- kMaxNumOfFlashSeqSet = 50
-
-type the following:
-
-<pre>
-    $ odbedit
-    [local:Default:S]/>          mkdir Config
-    [local:Default:S]/>          cd Config
-    [local:Default:S]Config>     mkdir ECAL
-    [local:Default:S]Config>     cd ECAL
-    [local:Default:S]ECAL>       mkdir LI
-    [local:Default:S]ECAL>       cd LI
-    [local:Default:S]LI>         mkdir Controller
-    [local:Default:S]LI>         cd Controller
-    [local:Default:S]Controller> create string IPAddress[8]
-    String length [32]: 16
-    [local:Default:S]Controller> create int Port[8]    
-    [local:Default:S]Controller> cd ..
-    [local:Default:S]LI>         mkdir Sequence
-    [local:Default:S]LI>         cd Sequence
-    [local:Default:S]Sequence>   create WORD NFlashesPerSetting
-    [local:Default:S]Sequence>   create WORD NTrigAppended            
-    [local:Default:S]Sequence>   create WORD NSettings     
-    [local:Default:S]Sequence>   create WORD PulserMask[50]
-    [local:Default:S]Sequence>   create WORD Amplitude[50]  
-    [local:Default:S]Sequence>   create WORD Pattern[50]  
-    [local:Default:S]Sequence>   cd ..
-    [local:Default:S]LI>         mkdir Sequence
-    [local:Default:S]LI>         cd Sequence
-</pre>
 
 
 # Other notes and recent changes
