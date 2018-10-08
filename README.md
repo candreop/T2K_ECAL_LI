@@ -1,6 +1,7 @@
 
-# T2K/ND280 Electromagnetic Calorimeter (ECAL) Light Injection (LI) Control Software
+# T2K ECAL/LI Control Software
 
+This is the sotfware used for controlling the Light Injection (LI) system of the T2K/ND280 Electromagnetic Calorimeter (ECAL).
 
 ## Author 
 
@@ -8,10 +9,12 @@ Costas Andreopoulos <constantinos.andreopoulos \at cern.ch>
 
 University of Liverpool & STFC Rutherford Appleton Laboratory
 
-## Required ODB entries
+## LI system and flash sequence configuration via ODB 
 
-The client reads the *LI system configuration* and the *flash sequence* from ODB.
-The following two directories need to be setup:
+The client reads the *LI system configuration* and the *flash sequence* from two ODB tables.
+
+These tables live in **/Config/ECAL/LI/Controller/** and **/Config/ECAL/LI/Sequence/**.
+and they need to be created by the user (instructions are given at the end of this REAME).
 
 <pre>
     /Config/ECAL/LI/Controller/
@@ -45,9 +48,8 @@ The definition and use of the controller and flash sequence variables is given b
   The maximum number of LI frash sequence settings.  
   The value should match *kMaxNumOfFlashSeqSet* defined in ECalLiDefs.h
 
-   The value of **MAX_NSETTINGS** also controls the TCP/IP mesg size sent to each LI card 
-   
-   TCP/IP mesg size in bytes = (MAX_NSETTINGS+4)*2 ]
+   The value of **MAX_NSETTINGS** also controls the TCP/IP mesg size sent to each LI card -
+   TCP/IP mesg size in bytes = (MAX_NSETTINGS+4)*2 
    
    If you modify **MAX_NSETTINGS** then the LI card firmware needs to be updated too so that the mesg sizes are in sync.
 
@@ -103,7 +105,13 @@ The definition and use of the controller and flash sequence variables is given b
   PulserMask[k] = (1<<0) + (1<<1) +  (1<<5) = 1 + 2 + 32 = 35.
 
 
+## LI system state information in ODB 
+
 The client periodically updates the ODB with the ECAL LI state.
+
+The LI state information is stored in **/State/ECAL/LI/** 
+
+This table is created automatically by the controler.
 
 <pre>
     /State/ECAL/LI/
@@ -205,7 +213,6 @@ Once the installer is configured, build the LI controller by typing:
 
 
 # Running the LI controller
-__________________________________________________________________________________________________
 
 - Open a terminal and start-up the MIDAS http server.
 
@@ -266,25 +273,20 @@ ________________________________________________________________________________
 - Start/stop runs, as needed, using the web browser
 
 
+# Creating the required ODB tables
 
-CREATING THE ODB TABLES
-__________________________________________________________________________________________________
-
-The ODB tables in /Config/ECAL/LI/Controller/ and /Config/ECAL/LI/Sequence/
-is your input and you have to create them yourself (instructions below).
-The ODB table in /State/ECAL/LI/ is the LI client output and is created automatically.
-
-To create the ODB tables, make sure that array sizes and variable type lengths
-match the ones decalared in ECalLiDefs.h
+To create the required input ODB tables (**/Config/ECAL/LI/Controller/** and **/Config/ECAL/LI/Sequence/**)
+make sure that array sizes and variable type lengths match the ones decalared in ECalLiDefs.h
 
 For example, to create the structure for:
 
- - kHostNameStrLen      = 16
- - kNumOfLIControlCards = 8
- - kMaxNumOfFlashSeqSet = 50
+- kHostNameStrLen      = 16
+- kNumOfLIControlCards = 8
+- kMaxNumOfFlashSeqSet = 50
 
 type the following:
 
+<pre>
     $ odbedit
     [local:Default:S]/>          mkdir Config
     [local:Default:S]/>          cd Config
@@ -309,10 +311,12 @@ type the following:
     [local:Default:S]Sequence>   cd ..
     [local:Default:S]LI>         mkdir Sequence
     [local:Default:S]LI>         cd Sequence
+</pre>
 
 
-Notes: 
-(June 21, 2013)
-The Aplitude, Pattern and IsActive fields used to be of BYTE type. 
-They were changed to WORD on Giles' request.
-To toggle between the new/old behavious use the kODBNoBYTE flag in ECalLiDefs.h
+# Other notes and recent changes
+
+- June 21, 2013:
+  The Aplitude, Pattern and IsActive fields used to be of BYTE type. 
+  They were changed to WORD on Giles' request.
+  To toggle between the new/old behavious use the kODBNoBYTE flag in ECalLiDefs.h
