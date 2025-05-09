@@ -1,13 +1,16 @@
 
+[![DOI](https://zenodo.org/badge/151296032.svg)](https://doi.org/10.5281/zenodo.15365309)
+
+
 # T2K ECAL/LI Control Software
 
 Software for controlling the Light Injection (LI) system of the T2K/ND280 Electromagnetic Calorimeter (ECAL).
 
 ## Author 
 
-Dr. Costas Andreopoulos <constantinos.andreopoulos \at cern.ch>
+Prof. Costas Andreopoulos <c.andreopoulos \at cern.ch>
 
-University of Liverpool & STFC Rutherford Appleton Laboratory
+University of Liverpool
 
 ## LI system and flash sequence configuration via ODB 
 
